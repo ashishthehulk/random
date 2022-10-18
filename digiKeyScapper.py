@@ -3,11 +3,12 @@ import bs4
 import pandas as pd
 
 
-
+headers = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36"
+}
 # Make requests from webpage
 url = 'https://www.digikey.in/en/products/filter/through-hole-resistors/53?s=N4IgTCBcDaIIwAYDWACATgUwM4EssBcB7NEAXQBoQBWKUAByjkrockQQF8Og'
-result = requests.get(url)
-
+result = requests.get(url,headers=headers)
 
 
 # Creating soap object
@@ -16,33 +17,38 @@ soup = bs4.BeautifulSoup(result.text,'lxml')
 
 
 # Searching div tags having maincounter-number class
-cases = soup.find_all('div' ,class_= 'MuiGrid-root jss259 MuiGrid-item')
-print(result.raw)
+cases = soup.find_all('tr' ,class_= 'MuiTableRow-root jss266')
 
 
 
-# List to store number of cases
-# data = []
+# Lists to store number of data
+dataID = []
+dataName = []
+prodName = []
+dataPrice = []
+dataCase = []
 
-# # Find the span and get data from it
-# for i in cases:
-#     print(i)
-#     span = i.find('jss262 jss246')
-#     data.append(span.string)
+print(len(cases))
+# Find the span and get data from it
+for i in cases:
+    spanID = i.find('a',{'class':'jss262 jss246'})
+    dataID.append(spanID.string)
+    spanName = i.find("div", {"class": "jss260"})
+    dataName.append(spanName.string)
+    spanProd = i.find('a',{'class':'jss261'})
+    prodName.append(spanProd.string)
+    spanCase = i.find('td',{'data-atag':'CLS 16'})
+    dataCase.append(spanCase.string)
+    spanPrice = i.find('td',{'data-atag':'tr-unitPrice'}).find('strong')
+    dataPrice.append(spanPrice.string)
 
-# # Display number of cases
-# print(data)
 
-
-
-# # Creating dataframe
-# df = pd.DataFrame({"CoronaData": data})
+df = pd.DataFrame({"Product ID": dataID,"Name":dataName,"Manufacturer":prodName,"Case/Package":dataCase,"Price":dataPrice})
 
 # # Naming the columns
-# df.index = ['TotalCases', ' Deaths', 'Recovered']
+df.index = dataID
 
 
 
 # # Exporting data into Excel
-# df.to_csv('Corona_Data.csv')
-print("yes")
+df.to_csv('digiKeyData.csv')
