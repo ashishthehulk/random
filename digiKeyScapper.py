@@ -47,8 +47,6 @@ for i in cases:
 
 df = pd.DataFrame({"Product ID": dataID,"Name":dataName,"Manufacturer":prodName,"Case/Package":dataCase,"Operating Temperature":dataTemp,"Price":dataPrice})
 
-# # Naming the columns
-df.index = dataID
 
 
 
