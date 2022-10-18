@@ -27,6 +27,7 @@ dataName = []
 prodName = []
 dataPrice = []
 dataCase = []
+dataTemp = []
 
 print(len(cases))
 # Find the span and get data from it
@@ -41,9 +42,10 @@ for i in cases:
     dataCase.append(spanCase.string)
     spanPrice = i.find('td',{'data-atag':'tr-unitPrice'}).find('strong')
     dataPrice.append(spanPrice.string)
+    spanTemp = i.find('td',{'data-atag':'CLS 252'})
+    dataTemp.append(spanTemp.string)
 
-
-df = pd.DataFrame({"Product ID": dataID,"Name":dataName,"Manufacturer":prodName,"Case/Package":dataCase,"Price":dataPrice})
+df = pd.DataFrame({"Product ID": dataID,"Name":dataName,"Manufacturer":prodName,"Case/Package":dataCase,"Operating Temperature":dataTemp,"Price":dataPrice})
 
 # # Naming the columns
 df.index = dataID
